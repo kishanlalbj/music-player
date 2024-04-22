@@ -4,6 +4,7 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
+    "install:deps": "npx yarn && cd client && yarn",
     "start:dev": "nodemon --exec babel-node src/index.js",
     "start": "node dist/index.js",
     "start:prod": "npm-run-all build:client build start",
