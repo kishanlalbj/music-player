@@ -38,10 +38,6 @@ const MusicPlayer = ({ song, onNext, onPrevious, onShuffle }) => {
       if (audioRef && audioRef.current && song) {
         console.log(audioRef.current);
         audioRef.current.src = `${BASE_URL}/songs/${song._id}/play`;
-        audioRef.current.autoplay = true;
-        // audioRef.current.muted = true;
-        // audioRef?.current?.play();
-        setPlaying(true);
       }
     };
 
@@ -79,12 +75,6 @@ const MusicPlayer = ({ song, onNext, onPrevious, onShuffle }) => {
   const handleProgress = (e) => {
     audioRef.current.currentTime = e;
   };
-
-  // useEffect(() => {
-  //   setInterval(() => {
-
-  //   }, 500);
-  // }, []);
 
   return (
     <div className="music-player-wrapper">
