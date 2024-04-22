@@ -16,6 +16,8 @@ const Home = () => {
     const { results } = await fetchSongsApi();
 
     setSongs(results);
+    setSelectedSong(results[currentSongIndex]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -74,7 +76,7 @@ const Home = () => {
         <>
           <section>
             <MusicPlayer
-              song={songs.length > 0 ? songs[currentSongIndex] : null}
+              song={songs.length > 0 ? selectedSong : null}
               onNext={handleNext}
               onPrevious={handlePrevious}
               onShuffle={handleShuffle}

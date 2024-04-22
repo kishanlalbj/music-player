@@ -2,6 +2,7 @@ import "dotenv/config";
 import express from "express";
 import morgan from "morgan";
 import cors from "cors";
+import path from "path";
 import songRouter from "./router/songRouter";
 import connectDB from "./db";
 
@@ -18,6 +19,8 @@ const PORT = process.env.PORT || 4000;
 
 app.use("/api/songs", songRouter);
 
+app.use(express.static(path.join(__dirname, "../client/dist")));
+
 app.use((err, req, res, next) => {
   const status = err.statusCode || 500;
   const message = err.message || "Internal Server Error";
@@ -25,7 +28,8 @@ app.use((err, req, res, next) => {
   const obj = {
     success: false,
     status,
-    message
+    message,
+    stack: err.stack
   };
 
   res.status(status).send(obj);

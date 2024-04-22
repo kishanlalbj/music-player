@@ -7,6 +7,9 @@ import {
 
 import HttpError from "../utils/HttpError";
 import fs from "fs";
+import { PutObjectCommand, GetObjectCommand } from "@aws-sdk/client-s3";
+import s3 from "../utils/s3";
+import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 
 export const addSongController = async (req, res, next) => {
   try {
@@ -16,11 +19,20 @@ export const addSongController = async (req, res, next) => {
       throw new HttpError(400, "song details required");
     }
 
-    const tags = NodeID3.read(req.file.path);
+    const command = new PutObjectCommand({
+      Bucket: process.env.BUCKET_NAME,
+      Key: req.file.originalname,
+      Body: req.file.buffer,
+      ContentType: req.file.mimetype
+    });
+
+    await s3.send(command);
+
+    const tags = NodeID3.read(req.file.buffer);
 
     const song = {
       name,
-      song: req.file.filename,
+      song: req.file.originalname,
       cover: tags?.image?.imageBuffer || "",
       artist: tags.artist,
       album: tags.album
@@ -41,6 +53,16 @@ export const addSongController = async (req, res, next) => {
 export const getAllSongsController = async (req, res, next) => {
   try {
     const songs = await getAllSongsServive();
+
+    for (const song of songs) {
+      const getObjectParams = {
+        Bucket: process.env.BUCKET_NAME,
+        Key: song.song
+      };
+      const command = new GetObjectCommand(getObjectParams);
+      const url = await getSignedUrl(s3, command, { expiresIn: 60 * 60 * 60 });
+      song.directUrl = url;
+    }
 
     res.send({
       success: true,

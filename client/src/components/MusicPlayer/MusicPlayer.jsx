@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import {
   CaretRightOutlined,
   MutedOutlined,
@@ -12,12 +12,13 @@ import "./MusicPlayer.css";
 import { Button, Slider, Typography } from "antd";
 import formatTime from "../../utils/formatTime";
 import fallbackLogo from "../../assets/music-note-dark.svg";
-import { BASE_URL } from "../../api";
+// import { BASE_URL } from "../../api";
 
 const MusicPlayer = ({ song, onNext, onPrevious, onShuffle }) => {
   const audioRef = useRef(new Audio());
   const [playing, setPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
+  const [loading, setLoading] = useState(false);
 
   const handlePause = () => {
     if (!audioRef.current.paused) {
@@ -33,16 +34,16 @@ const MusicPlayer = ({ song, onNext, onPrevious, onShuffle }) => {
     }
   };
 
-  useEffect(() => {
-    const playSong = () => {
-      if (audioRef && audioRef.current && song) {
-        console.log(audioRef.current);
-        audioRef.current.src = `${BASE_URL}/songs/${song._id}/play`;
-      }
-    };
-
-    playSong();
+  const setSong = useCallback(() => {
+    if (audioRef && song) {
+      audioRef.current.src = song.directUrl;
+      audioRef.current.autoplay = true;
+    }
   }, [song]);
+
+  useEffect(() => {
+    setSong();
+  }, [setSong, song]);
 
   useEffect(() => {
     let timer;
@@ -50,6 +51,12 @@ const MusicPlayer = ({ song, onNext, onPrevious, onShuffle }) => {
       timer = setInterval(() => {
         if (audioRef.current.currentTime === audioRef.current.duration) {
           handleNext();
+        }
+
+        if (audioRef.current.buffered.length === 0) {
+          setLoading(true);
+        } else {
+          setLoading(false);
         }
 
         setCurrentTime(audioRef.current.currentTime);
@@ -148,6 +155,7 @@ const MusicPlayer = ({ song, onNext, onPrevious, onShuffle }) => {
                   shape="circle"
                   icon={<PauseOutlined />}
                   onClick={handlePause}
+                  loading={loading}
                 ></Button>
               ) : (
                 <Button
@@ -155,6 +163,7 @@ const MusicPlayer = ({ song, onNext, onPrevious, onShuffle }) => {
                   shape="circle"
                   icon={<CaretRightOutlined />}
                   onClick={handlePlay}
+                  loading={loading}
                 ></Button>
               )}
 
