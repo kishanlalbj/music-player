@@ -4,6 +4,7 @@ import morgan from "morgan";
 import cors from "cors";
 import path from "path";
 import songRouter from "./router/songRouter";
+import authRouter from "./router/authRouter";
 import connectDB from "./db";
 
 const app = express();
@@ -18,6 +19,7 @@ app.use(morgan("dev"));
 const PORT = process.env.PORT || 4000;
 
 app.use("/api/songs", songRouter);
+app.use("/api/auth", authRouter);
 
 app.use(express.static(path.join(__dirname, "../client/dist")));
 
