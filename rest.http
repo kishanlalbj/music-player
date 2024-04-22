@@ -1,0 +1,16 @@
+### add a song
+POST http://localhost:5000/api/song
+Content-Type: multipart/form-data
+
+{
+    "name": "New York Nagaram",
+}
+
+
+###
+GET http://localhost:5000/api/songs
+
+
+###
+GET http://localhost:5000/api/songs/66254f5805ddeab94eaa3a9a/play
+Range: 20

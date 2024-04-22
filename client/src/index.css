@@ -1,0 +1,20 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.container {
+  width: 60%;
+  margin: 0 auto;
+}
+
+section {
+  margin: 50px 0;
+}
+
+@media only screen and (max-width: 786px) {
+  .container {
+    width: 90%;
+  }
+}
