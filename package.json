@@ -6,8 +6,10 @@
   "scripts": {
     "start:dev": "nodemon --exec babel-node src/index.js",
     "start": "node dist/index.js",
+    "start:prod": "npm-run-all build:client build start",
     "clean": "rimraf dist",
     "transpile": "babel src --ignore ./client/ --out-dir dist",
+    "build:client": "cd client && yarn build",
     "build": "npm-run-all clean transpile"
   },
   "devDependencies": {
