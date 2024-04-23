@@ -1,9 +1,9 @@
-import { useCallback, useEffect, useState } from "react";
-import { fetchSongsApi } from "../api";
+import { useEffect, useState } from "react";
 import MusicPlayer from "../components/MusicPlayer/MusicPlayer";
 import { Alert, Avatar, Card, List, Tag, Typography } from "antd";
 import { CaretRightFilled } from "@ant-design/icons";
 import fallbackLogo from "../assets/music-note-dark.svg";
+import { useGetAllSongsQuery } from "../app/services/songsService";
 
 const Home = () => {
   const [songs, setSongs] = useState([]);
@@ -12,24 +12,26 @@ const Home = () => {
   const [show, setShow] = useState(false);
   const [message, setMessage] = useState(null);
 
-  const getSongs = useCallback(async () => {
-    const { results } = await fetchSongsApi();
-
-    setSongs(results);
-    setSelectedSong(results[currentSongIndex]);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  const { data, isLoading, isError } = useGetAllSongsQuery();
 
   useEffect(() => {
-    getSongs();
-  }, [getSongs]);
+    if (!isLoading && data?.results) {
+      setSongs(data.results);
+      setSelectedSong(data.results[0]);
+    }
+
+    if (isError) {
+      setShow(true);
+      setMessage("Something went wrong");
+    }
+  }, [data, isLoading, isError]);
 
   const selectSong = (id) => {
     const index = songs.findIndex((s) => s._id === id);
     if (index !== -1) {
       setSelectedSong(songs[index]);
+      setCurrentSongIndex(index);
     }
-    setCurrentSongIndex(index);
   };
 
   const handleNext = () => {
@@ -83,16 +85,15 @@ const Home = () => {
             />
           </section>
           <section>
-            <Typography.Title level={2} style={{ color: "#ffffff" }}>
-              Up Next
-            </Typography.Title>
+            <Typography.Title level={4}>Songs List</Typography.Title>
 
             <>
               <Card>
                 <List
+                  loading={isLoading}
                   pagination={{
                     position: "bottom",
-                    pageSize: 5
+                    pageSize: 4
                   }}
                   itemLayout="horizontal"
                   dataSource={songs}
@@ -139,7 +140,9 @@ const Home = () => {
       </div>
 
       <div className="alert-wrapper">
-        {show && <Alert type="info" closable description={message}></Alert>}
+        {show && (
+          <Alert type="info" closable message={message} showIcon></Alert>
+        )}
       </div>
     </div>
   );

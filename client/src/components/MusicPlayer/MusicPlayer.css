@@ -1,20 +1,49 @@
-.music-player-wrapper {
-  /* background-color: #333; */
+/* .music-player-wrapper {
   background-color: #fff;
   border-radius: 10px;
   box-shadow: 0px 0px 50px #69b1ff;
-  /* position: fixed; */
-  /* bottom: 0; */
   width: 100%;
   z-index: 3;
+} */
+
+.music-player-wrapper {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  z-index: 2;
+  background-color: rgb(255, 255, 255);
+  border-top: 1px solid lightgray;
+  box-shadow: 0px 10px 10px rgba(0, 0, 0, 0.5);
 }
 
-.audio-controls-container {
+.audio-progress-ref {
+  position: relative;
+}
+
+.audio-progress-container {
   display: flex;
   align-items: center;
   gap: 16px;
   justify-content: start;
   flex-direction: row-reverse;
+  width: 100%;
+}
+
+#audio-progress-slider {
+  position: absolute;
+  top: -5%;
+  left: 0;
+  width: 100%;
+}
+
+#audio-progress-slider > .ant-slider {
+  padding: 0;
+  margin: 0;
+}
+
+.ant-slider-handle {
+  display: none;
 }
 
 .audio-duration-container {
@@ -24,14 +53,24 @@
 }
 
 .music-player {
-  padding: 24px;
+  padding: 12px 24px;
   border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.music-details-container {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  gap: 16px;
 }
 
 .music-details {
   display: flex;
-  align-items: center;
-  gap: 16px;
+  gap: 12px;
+  font-size: 12px;
 }
 
 .audio-control-btns-container {
@@ -45,23 +84,43 @@
   width: 100%;
 }
 
+@media only screen and (max-width: 376px) {
+  .music-player {
+    padding: 6px 0px;
+  }
+  .music-player-album-cover {
+    display: none;
+  }
+}
+
 @media only screen and (max-width: 786px) {
+  .music-player {
+    gap: 12px;
+    flex-direction: row-reverse;
+  }
+
+  .audio-control-btns-container {
+    gap: 12px;
+  }
+
+  .audio-duration-container,
+  .audio-other-controls {
+    display: none;
+  }
+
+  #audio-progress-slider {
+    top: 0%;
+  }
+
+  .music-player-album-cover {
+    width: 56px;
+  }
+
   .music-details {
-    flex-direction: column;
-    justify-content: center;
+    align-items: start;
   }
 
-  .music-details img {
-    width: 100%;
-  }
-
-  .audio-controls-container {
-    flex-wrap: wrap;
-    justify-content: center;
-  }
-
-  .audio-progress {
-    flex-grow: 1;
-    width: 100%;
+  .music-details-text {
+    font-size: 0.7rem;
   }
 }

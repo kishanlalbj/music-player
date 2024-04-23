@@ -1,9 +1,16 @@
 import { Typography } from "antd";
-import logo from "../assets/music-note.svg";
+import logo from "../../assets/music-note.svg";
+import wave from "../../assets/wave.svg";
+import "./Header.css";
 
 const Header = () => {
   return (
-    <div className="header-wrapper">
+    <div
+      className="header-wrapper"
+      style={{
+        background: `url(${wave})`
+      }}
+    >
       <div className="container">
         <div className="header-container">
           <div>
