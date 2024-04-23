@@ -9,8 +9,6 @@ const verifyJwt = (req, res, next) => {
 
     const token = authHeader.split(" ")[1];
 
-    console.log(process.env.JWT_SECRET);
-
     jwt.verify(token, process.env.JWT_SECRET, (err, payload) => {
       if (err) {
         console.log(err);

@@ -11,7 +11,13 @@ const UserSchema = new Schema(
     password: {
       type: String,
       required: true
-    }
+    },
+    favourites: [
+      {
+        type: mongoose.Types.ObjectId,
+        ref: "Song"
+      }
+    ]
   },
   {
     timestamps: true

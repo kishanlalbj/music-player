@@ -1,7 +1,6 @@
 import jwt from "jsonwebtoken";
 
 const generateJWT = (payload) => {
-  console.log(process.env.JWT_SECRET);
   return new Promise((resolve, reject) => {
     jwt.sign(
       payload,
