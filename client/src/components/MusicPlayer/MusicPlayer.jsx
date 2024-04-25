@@ -13,19 +13,24 @@ import { Button, Flex, Slider, Typography } from "antd";
 import formatTime from "../../utils/formatTime";
 import fallbackLogo from "../../assets/music-note-dark.svg";
 import { useDispatch, useSelector } from "react-redux";
-import { setCurrentSong } from "../../app/slices/musicPlayer";
+import {
+  setCurrentSong,
+  setCurrentSongIndex
+} from "../../app/slices/musicPlayer";
 
 const MusicPlayer = ({ onShuffle }) => {
   const dispatch = useDispatch();
-  const { currentSong: song = {}, nowPlayingList } = useSelector(
-    (state) => state.musicPlayer
-  );
+  const {
+    currentSong: song = {},
+    nowPlayingList,
+    currentSongIndex
+  } = useSelector((state) => state.musicPlayer);
 
   const audioRef = useRef(new Audio());
   const [playing, setPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
   const [loading, setLoading] = useState(false);
-  const [currentSongIndex, setCurrentSongIndex] = useState(0);
+  // const [currentSongIndex, setCurrentSongIndex] = useState(0);
 
   const handlePause = () => {
     if (!audioRef.current.paused) {
@@ -82,14 +87,14 @@ const MusicPlayer = ({ onShuffle }) => {
     if (currentSongIndex === nowPlayingList.length - 1) {
       console.log("Last Song");
     } else {
-      setCurrentSongIndex((prev) => prev + 1);
+      setCurrentSongIndex(currentSongIndex + 1);
       dispatch(setCurrentSong(nowPlayingList[currentSongIndex + 1]));
     }
   };
 
   const handlePrevious = () => {
     if (!currentSongIndex - 1 < 0) {
-      setCurrentSongIndex((prev) => prev - 1);
+      setCurrentSongIndex(currentSongIndex - 1);
       dispatch(setCurrentSong(nowPlayingList[currentSongIndex - 1]));
     } else {
       console.log("First song");
