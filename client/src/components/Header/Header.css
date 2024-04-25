@@ -16,3 +16,7 @@
 .logo-text {
   font-family: monospace;
 }
+
+.logo-link {
+  text-decoration: none;
+}

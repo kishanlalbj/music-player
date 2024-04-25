@@ -10,7 +10,6 @@ const PlaylistSchema = new Schema(
       {
         type: Schema.Types.ObjectId,
         ref: "Song",
-        unique: true,
         default: []
       }
     ],

@@ -10,6 +10,7 @@ import fs from "fs";
 import { PutObjectCommand, GetObjectCommand } from "@aws-sdk/client-s3";
 import s3 from "../utils/s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
+import { exec } from "child_process";
 
 export const addSongController = async (req, res, next) => {
   try {
@@ -30,20 +31,23 @@ export const addSongController = async (req, res, next) => {
 
     const tags = NodeID3.read(req.file.buffer);
 
-    const song = {
+    const { album, artist, image } = tags;
+
+    const newSong = {
       name,
       song: req.file.originalname,
-      cover: tags?.image?.imageBuffer || "",
-      artist: tags.artist,
-      album: tags.album
+      cover: `data:image/jpeg;base64,${image.imageBuffer.toString("base64")}`,
+      artist,
+      album
     };
 
-    const newSong = await addSongService(song);
+    // const newSong = await addSongService(song);
 
-    res.send({
+    res.status(201).send({
       success: true,
       message: "song added",
       song: newSong
+      // song
     });
   } catch (error) {
     next(error);
@@ -73,6 +77,7 @@ export const getAllSongsController = async (req, res, next) => {
   }
 };
 
+/** DEPRECATED */
 export const playSongController = async (req, res, next) => {
   try {
     const { id } = req.params;
@@ -81,7 +86,7 @@ export const playSongController = async (req, res, next) => {
     if (!id) throw new HttpError(400, "Song id is required");
 
     if (!range) {
-      throw new HttpError(400, "Range headers mmissing");
+      throw new HttpError(400, "Range headers missing");
     }
 
     const { song } = await getSongByIdService(id);

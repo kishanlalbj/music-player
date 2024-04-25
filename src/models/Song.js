@@ -12,7 +12,7 @@ const SongSchema = new mongoose.Schema(
       required: true
     },
     cover: {
-      type: Buffer,
+      type: String,
       default: ""
     },
     album: {
@@ -22,6 +22,10 @@ const SongSchema = new mongoose.Schema(
     artist: {
       type: String,
       default: "Unknown"
+    },
+    duration: {
+      type: Number,
+      default: 0
     }
   },
   {

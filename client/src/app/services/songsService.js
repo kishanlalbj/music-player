@@ -5,11 +5,9 @@ export const songsApi = createApi({
   reducerPath: "songs",
   baseQuery: fetchBaseQuery({ baseUrl: `${BASE_URL}/songs` }),
   endpoints: (builder) => ({
-    // Reading data, we use query()
     getAllSongs: builder.query({
       query: () => "/"
     }),
-
     getSongById: builder.query({
       query: (id) => `/${id}`
     })

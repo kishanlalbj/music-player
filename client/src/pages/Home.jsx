@@ -1,14 +1,15 @@
 import { useEffect, useState } from "react";
-import MusicPlayer from "../components/MusicPlayer/MusicPlayer";
 import { Alert, Avatar, Card, List, Tag, Typography } from "antd";
-import { CaretRightFilled } from "@ant-design/icons";
 import fallbackLogo from "../assets/music-note-dark.svg";
 import { useGetAllSongsQuery } from "../app/services/songsService";
+import { setCurrentSong, setNowPlaying } from "../app/slices/musicPlayer";
+import { useDispatch, useSelector } from "react-redux";
 
 const Home = () => {
+  const dispatch = useDispatch();
+  const { currentSong } = useSelector((state) => state.musicPlayer);
+
   const [songs, setSongs] = useState([]);
-  const [currentSongIndex, setCurrentSongIndex] = useState(0);
-  const [selectedSong, setSelectedSong] = useState({});
   const [show, setShow] = useState(false);
   const [message, setMessage] = useState(null);
 
@@ -17,48 +18,19 @@ const Home = () => {
   useEffect(() => {
     if (!isLoading && data?.results) {
       setSongs(data.results);
-      setSelectedSong(data.results[0]);
+      dispatch(setNowPlaying(data.results));
     }
 
     if (isError) {
       setShow(true);
       setMessage("Something went wrong");
     }
-  }, [data, isLoading, isError]);
+  }, [data, isLoading, isError, dispatch]);
 
   const selectSong = (id) => {
     const index = songs.findIndex((s) => s._id === id);
     if (index !== -1) {
-      setSelectedSong(songs[index]);
-      setCurrentSongIndex(index);
-    }
-  };
-
-  const handleNext = () => {
-    if (currentSongIndex === songs.length - 1) {
-      setShow(true);
-      setMessage("This is last song");
-    } else {
-      setCurrentSongIndex((prev) => prev + 1);
-      setSelectedSong(songs[currentSongIndex + 1]);
-    }
-  };
-
-  const handlePrevious = () => {
-    if (!currentSongIndex - 1 < 0) {
-      setCurrentSongIndex((prev) => prev - 1);
-      setSelectedSong(songs[currentSongIndex - 1]);
-    } else {
-      setShow(true);
-      setMessage("This is first song");
-    }
-  };
-
-  const handleShuffle = () => {
-    if (songs.length > 0) {
-      const random = Math.floor(Math.random() * songs.length);
-      setSelectedSong(songs[random]);
-      setCurrentSongIndex(random);
+      dispatch(setCurrentSong(songs[index]));
     }
   };
 
@@ -76,14 +48,6 @@ const Home = () => {
     <div>
       <div className="container">
         <>
-          <section>
-            <MusicPlayer
-              song={songs.length > 0 ? selectedSong : null}
-              onNext={handleNext}
-              onPrevious={handlePrevious}
-              onShuffle={handleShuffle}
-            />
-          </section>
           <section>
             <Typography.Title level={4}>Songs List</Typography.Title>
 
@@ -105,17 +69,13 @@ const Home = () => {
                       <List.Item.Meta
                         avatar={
                           <Avatar
-                            src={
-                              item.cover
-                                ? `data:image/png;base64,${item.cover}`
-                                : fallbackLogo
-                            }
+                            src={item.cover ? `${item.cover}` : fallbackLogo}
                           />
                         }
                         title={
                           <Typography.Text>
                             {item.name} &nbsp;{" "}
-                            {selectedSong._id === item._id && (
+                            {currentSong._id === item._id && (
                               <Tag bordered={false} color="geekblue">
                                 Playing
                               </Tag>
@@ -124,12 +84,12 @@ const Home = () => {
                         }
                         description={item.album}
                       />
-
-                      {selectedSong._id !== item._id && (
+                      {/* 
+                      {currentSong._id !== item._id && (
                         <div>
                           <CaretRightFilled style={{ fontSize: "1.4rem" }} />
                         </div>
-                      )}
+                      )} */}
                     </List.Item>
                   )}
                 ></List>

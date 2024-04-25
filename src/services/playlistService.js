@@ -26,7 +26,7 @@ export const findAllPlaylistService = async () => {
 
 export const findPlaylistByIdService = async (id) => {
   try {
-    const playlist = await PlayList.findById(id).lean();
+    const playlist = await PlayList.findById(id).populate("tracks").lean();
 
     return playlist;
   } catch (error) {
@@ -44,6 +44,7 @@ export const addSongToPlaylistService = async (id, song) => {
 
     return playlists;
   } catch (error) {
+    console.log(error.message);
     throw error;
   }
 };

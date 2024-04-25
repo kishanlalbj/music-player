@@ -12,17 +12,20 @@ import "./MusicPlayer.css";
 import { Button, Flex, Slider, Typography } from "antd";
 import formatTime from "../../utils/formatTime";
 import fallbackLogo from "../../assets/music-note-dark.svg";
-import { useGetAllSongsQuery } from "../../app/services/songsService";
+import { useDispatch, useSelector } from "react-redux";
+import { setCurrentSong } from "../../app/slices/musicPlayer";
 
-const MusicPlayer = ({ song, onNext, onPrevious, onShuffle }) => {
+const MusicPlayer = ({ onShuffle }) => {
+  const dispatch = useDispatch();
+  const { currentSong: song = {}, nowPlayingList } = useSelector(
+    (state) => state.musicPlayer
+  );
+
   const audioRef = useRef(new Audio());
   const [playing, setPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
   const [loading, setLoading] = useState(false);
-
-  const { data } = useGetAllSongsQuery();
-
-  console.log({ data });
+  const [currentSongIndex, setCurrentSongIndex] = useState(0);
 
   const handlePause = () => {
     if (!audioRef.current.paused) {
@@ -42,6 +45,7 @@ const MusicPlayer = ({ song, onNext, onPrevious, onShuffle }) => {
     if (audioRef && song) {
       audioRef.current.src = song.directUrl;
       audioRef.current.autoplay = true;
+      setPlaying(true);
     }
   }, [song]);
 
@@ -53,7 +57,11 @@ const MusicPlayer = ({ song, onNext, onPrevious, onShuffle }) => {
     let timer;
     if (song && playing) {
       timer = setInterval(() => {
-        if (audioRef.current.currentTime === audioRef.current.duration) {
+        // Play next song automatically if exists
+        if (
+          audioRef.current.currentTime === audioRef.current.duration &&
+          currentSongIndex < nowPlayingList.length - 1
+        ) {
           handleNext();
         }
 
@@ -71,11 +79,21 @@ const MusicPlayer = ({ song, onNext, onPrevious, onShuffle }) => {
   });
 
   const handleNext = () => {
-    onNext();
+    if (currentSongIndex === nowPlayingList.length - 1) {
+      console.log("Last Song");
+    } else {
+      setCurrentSongIndex((prev) => prev + 1);
+      dispatch(setCurrentSong(nowPlayingList[currentSongIndex + 1]));
+    }
   };
 
   const handlePrevious = () => {
-    onPrevious();
+    if (!currentSongIndex - 1 < 0) {
+      setCurrentSongIndex((prev) => prev - 1);
+      dispatch(setCurrentSong(nowPlayingList[currentSongIndex - 1]));
+    } else {
+      console.log("First song");
+    }
   };
 
   const handleMute = () => {
@@ -86,6 +104,8 @@ const MusicPlayer = ({ song, onNext, onPrevious, onShuffle }) => {
   const handleProgress = (e) => {
     audioRef.current.currentTime = e;
   };
+
+  if (Object.keys(song).length === 0) return <></>;
 
   return (
     <div className="music-player-wrapper">
@@ -135,11 +155,7 @@ const MusicPlayer = ({ song, onNext, onPrevious, onShuffle }) => {
             <div className="music-details">
               <div>
                 <img
-                  src={
-                    song?.cover
-                      ? `data:image/png;base64,${song.cover}`
-                      : fallbackLogo
-                  }
+                  src={song?.cover ? `${song.cover}` : fallbackLogo}
                   className="music-player-album-cover"
                   width={"48px"}
                 ></img>
@@ -151,9 +167,7 @@ const MusicPlayer = ({ song, onNext, onPrevious, onShuffle }) => {
                 >
                   {song?.name}
                 </Typography.Text>
-                {/* <Typography.Text className="music-details-text">
-                  {song?.album}
-                </Typography.Text> */}
+
                 <Typography.Text className="music-details-text">
                   {song?.artist}
                 </Typography.Text>

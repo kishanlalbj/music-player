@@ -1,5 +1,6 @@
 import { Outlet } from "react-router-dom";
 import Header from "../components/Header/Header";
+import MusicPlayer from "../components/MusicPlayer/MusicPlayer";
 
 const RootLayout = () => {
   return (
@@ -7,6 +8,8 @@ const RootLayout = () => {
       <Header />
 
       <Outlet />
+
+      <MusicPlayer></MusicPlayer>
     </div>
   );
 };
