@@ -1,17 +1,21 @@
 import { useEffect, useState } from "react";
-import { Alert, Avatar, Card, List, Tag, Typography } from "antd";
+import { Avatar, Button, Card, List, Modal, Tag, Typography } from "antd";
 import fallbackLogo from "../assets/music-note-dark.svg";
 import { useGetAllSongsQuery } from "../app/services/songsService";
 import { setCurrentSong, setNowPlaying } from "../app/slices/musicPlayer";
 import { useDispatch, useSelector } from "react-redux";
+import { InboxOutlined, UploadOutlined } from "@ant-design/icons";
+import Dragger from "antd/es/upload/Dragger";
+import { uploadSongApi } from "../api";
 
 const Home = () => {
   const dispatch = useDispatch();
+  const [file, setFile] = useState();
+  const [loading, setLoading] = useState(false);
   const { currentSong } = useSelector((state) => state.musicPlayer);
 
   const [songs, setSongs] = useState([]);
   const [show, setShow] = useState(false);
-  const [message, setMessage] = useState(null);
 
   const { data, isLoading, isError } = useGetAllSongsQuery();
 
@@ -23,7 +27,6 @@ const Home = () => {
 
     if (isError) {
       setShow(true);
-      setMessage("Something went wrong");
     }
   }, [data, isLoading, isError, dispatch]);
 
@@ -34,22 +37,40 @@ const Home = () => {
     }
   };
 
-  useEffect(() => {
-    let timer;
+  const handleBeforeUpload = (file) => {
+    setFile(file);
 
-    timer = setTimeout(() => {
-      setShow(false);
-      setMessage(false);
-    }, 2000);
-    return () => clearTimeout(timer);
-  });
+    return false;
+  };
+
+  const handleUpload = async () => {
+    setLoading(true);
+
+    setTimeout(() => {
+      uploadSongApi(file);
+    }, 100);
+
+    setLoading(false);
+  };
 
   return (
     <div>
       <div className="container">
         <>
           <section>
-            <Typography.Title level={4}>Songs List</Typography.Title>
+            <>
+              <div className="songs-list-header">
+                <Typography.Title level={4}>All Songs</Typography.Title>
+
+                <Button
+                  type="primary"
+                  icon={<UploadOutlined />}
+                  onClick={() => setShow((prev) => !prev)}
+                >
+                  Upload
+                </Button>
+              </div>
+            </>
 
             <>
               <Card>
@@ -57,7 +78,7 @@ const Home = () => {
                   loading={isLoading}
                   pagination={{
                     position: "bottom",
-                    pageSize: 4
+                    pageSize: 4,
                   }}
                   itemLayout="horizontal"
                   dataSource={songs}
@@ -99,11 +120,23 @@ const Home = () => {
         </>
       </div>
 
-      <div className="alert-wrapper">
-        {show && (
-          <Alert type="info" closable message={message} showIcon></Alert>
-        )}
-      </div>
+      <Modal
+        open={show}
+        title="Upload a song"
+        onOk={handleUpload}
+        confirmLoading={loading}
+        onCancel={() => setShow(false)}
+      >
+        <Dragger multiple={false} name="file" beforeUpload={handleBeforeUpload}>
+          <p className="ant-upload-drag-icon">
+            <InboxOutlined />
+          </p>
+          <p className="ant-upload-text">
+            Click or drag file to this area to upload
+          </p>
+          <p className="ant-upload-hint">We support only .mp3 fies</p>
+        </Dragger>
+      </Modal>
     </div>
   );
 };

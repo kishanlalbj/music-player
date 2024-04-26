@@ -5,9 +5,11 @@ const verifyJwt = (req, res, next) => {
   try {
     const authHeader = req.headers["authorization"];
 
-    if (!authHeader) return res.status(401).json({ message: "Unauthorized" });
+    if (!authHeader) throw new HttpError(401, 'Authorization header missing')
 
     const token = authHeader.split(" ")[1];
+
+    if(!token || token === 'null') throw new HttpError(401, "Unauthorized")
 
     jwt.verify(token, process.env.JWT_SECRET, (err, payload) => {
       if (err) {

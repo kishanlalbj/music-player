@@ -12,8 +12,7 @@ const Playlists = () => {
   };
 
   return (
-    <div className="container">
-      <br />
+    <div className="container" style={{ marginTop: "48px" }}>
       <Typography.Title level={4}>Latest playlists</Typography.Title>
       <div className="playlist-grid">
         {data?.result?.map((playlist) => (

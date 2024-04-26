@@ -1,4 +1,5 @@
 import User from "../models/User";
+import { getUserById } from "../services/authService";
 import HttpError from "../utils/HttpError";
 import generateJWT from "../utils/generateJWT";
 
@@ -29,9 +30,10 @@ export const loginController = async (req, res, next) => {
   try {
     const { email, password } = req.body;
 
+
     if (!email || !password) throw new HttpError(400, "All fields required");
 
-    const user = await User.findOne({ email });
+    const user = await User.findOne({ email }).select('password email');
 
     if (!user) throw new HttpError(404, "User not found");
 
@@ -51,3 +53,20 @@ export const loginController = async (req, res, next) => {
     next(error);
   }
 };
+
+
+export const getCurrentUserController = async (req, res, next) => {
+  try {
+      const {id:userId} = req.user
+
+      const user = await getUserById(userId)
+
+
+      if(!user) throw new HttpError(401, "User not found");
+
+
+      res.send(user)
+  } catch (error) {
+    next(error)
+  }
+}

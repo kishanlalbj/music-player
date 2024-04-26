@@ -36,6 +36,32 @@
   border-radius: 10px;
 }
 
+
+/* Login page Wrapper */
+
+.login-page-wrapper {
+  height: 100%;
+}
+
+
+.login-container {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+
+
+/* Home */
+
+.songs-list-header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  margin: 28px 0;
+}
+
 @media only screen and (max-width: 430px) {
   .playlist-grid {
     grid-template-columns: 1fr;

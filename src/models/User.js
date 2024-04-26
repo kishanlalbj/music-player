@@ -1,5 +1,6 @@
 import mongoose, { Schema } from "mongoose";
 import bcrypt from "bcryptjs";
+import roles from '../utils/roles';
 
 const UserSchema = new Schema(
   {
@@ -10,7 +11,13 @@ const UserSchema = new Schema(
     },
     password: {
       type: String,
-      required: true
+      required: true,
+      select: false
+    },
+    role: {
+      type: String,
+      enum: [roles.ADMIN, roles.USER],
+      default: roles.USER
     },
     favourites: [
       {
@@ -32,6 +39,7 @@ UserSchema.pre("save", async function (next) {
 });
 
 UserSchema.methods.isValidPassword = async function (password) {
+  console.log({password})
   let isMatch = await bcrypt.compare(password, this.password);
   return isMatch;
 };

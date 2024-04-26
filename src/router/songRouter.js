@@ -2,7 +2,8 @@ import { Router } from "express";
 import {
   addSongController,
   getAllSongsController,
-  playSongController
+  playSongController,
+  searchSongController
 } from "../controllers/songController";
 import upload from "../utils/upload";
 import verifyJwt from "../middlewares/verifyJwt";
@@ -13,6 +14,8 @@ router
   .route("/")
   .post(verifyJwt, upload.single("file"), addSongController)
   .get(getAllSongsController);
+
+router.route('/search').get(searchSongController)
 
 router.route("/:id/play").get(playSongController);
 

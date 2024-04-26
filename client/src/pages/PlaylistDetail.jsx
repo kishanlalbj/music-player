@@ -50,7 +50,7 @@ const PlaylistDetail = () => {
           loading={isLoading}
           pagination={{
             position: "bottom",
-            pageSize: 10
+            pageSize: 10,
           }}
           itemLayout="horizontal"
           dataSource={data?.result?.tracks}

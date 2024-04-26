@@ -26,3 +26,10 @@ export const getAllSongsServive = async () => {
 
   return songs;
 };
+
+
+export const searchSongService = async (q) => {
+  const songs = await Song.find({name: { $regex: q, $options: 'i' }}).select('name')
+
+  return songs
+}

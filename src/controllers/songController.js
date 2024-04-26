@@ -2,7 +2,8 @@ import NodeID3 from "node-id3";
 import {
   addSongService,
   getAllSongsServive,
-  getSongByIdService
+  getSongByIdService,
+  searchSongService
 } from "../services/songService";
 
 import HttpError from "../utils/HttpError";
@@ -11,6 +12,7 @@ import { PutObjectCommand, GetObjectCommand } from "@aws-sdk/client-s3";
 import s3 from "../utils/s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { exec } from "child_process";
+import Song from "../models/Song";
 
 export const addSongController = async (req, res, next) => {
   try {
@@ -33,7 +35,7 @@ export const addSongController = async (req, res, next) => {
 
     const { album, artist, image } = tags;
 
-    const newSong = {
+    const song = {
       name,
       song: req.file.originalname,
       cover: `data:image/jpeg;base64,${image.imageBuffer.toString("base64")}`,
@@ -41,7 +43,7 @@ export const addSongController = async (req, res, next) => {
       album
     };
 
-    // const newSong = await addSongService(song);
+    const newSong = await addSongService(song);
 
     res.status(201).send({
       success: true,
@@ -76,6 +78,28 @@ export const getAllSongsController = async (req, res, next) => {
     next(error);
   }
 };
+
+
+
+export const searchSongController = async (req, res, next) => {
+  try {
+      const {q} = req.query;
+
+    if(!q) throw new HttpError(400, "query string empty");
+
+    const songs = await searchSongService(q);
+
+    res.send({
+      success: true,
+      result: songs
+    })
+
+  } catch (error) {
+    next(error)
+  }
+}
+
+
 
 /** DEPRECATED */
 export const playSongController = async (req, res, next) => {

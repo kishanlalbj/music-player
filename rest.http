@@ -24,17 +24,16 @@ POST http://localhost:5000/api/auth/register
 Content-Type: application/json
 
 {
-    "email": "admin@thenisai.com",
+    "email": "admin@musico.com",
     "password": "admin"
 }
-
 
 ### Login
 POST http://localhost:5000/api/auth/login
 Content-Type: application/json
 
 {
-    "email": "admin@thenisai.com",
+    "email": "admin@musico.com",
     "password": "admin"
 }
 
@@ -57,3 +56,12 @@ Content-Type: application/json
 ###
 GET http://localhost:5000/api/playlists/662740198a35fcacf2c9ae71
 Authorization: Bearer 
+
+
+
+### 
+GET http://localhost:5000/api/auth/current-user
+Authorization: Bearer 
+
+# eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2MmE1MDQ5ZWU1ZWIyMzQxNzRkOGYzNiIsImlhdCI6MTcxNDEwNzc5NCwiZXhwIjoxNzQ1NjY1Mzk0fQ.J5hABuU7fXJa_dCpRgzl4fyofpNDi2HE5gc4CDVOVO0
+

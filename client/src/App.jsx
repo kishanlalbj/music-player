@@ -4,12 +4,25 @@ import theme from "./utils/theme";
 
 import { RouterProvider } from "react-router-dom";
 import router from "./routes";
+import { useEffect } from "react";
+import { useDispatch } from "react-redux";
+import { getCurrentUserAsync } from "./app/slices/auth";
 
 function App() {
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(getCurrentUserAsync());
+  }, [dispatch]);
+
   return (
-    <RouterProvider router={router}>
-      <ConfigProvider theme={theme}></ConfigProvider>
-    </RouterProvider>
+    <ConfigProvider
+      theme={{
+        ...theme,
+      }}
+    >
+      <RouterProvider router={router}></RouterProvider>
+    </ConfigProvider>
   );
 }
 
