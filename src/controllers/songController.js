@@ -33,7 +33,7 @@ export const addSongController = async (req, res, next) => {
     const song = {
       name,
       song: req.file.originalname,
-      cover: tags?.image?.imageBuffer || "",
+      cover: `data:image/jpeg;base64,${image.imageBuffer.toString("base64")}`,
       artist: tags.artist,
       album: tags.album
     };

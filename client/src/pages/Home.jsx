@@ -104,11 +104,7 @@ const Home = () => {
                       <List.Item.Meta
                         avatar={
                           <Avatar
-                            src={
-                              item.cover
-                                ? `data:image/png;base64,${item.cover}`
-                                : fallbackLogo
-                            }
+                            src={item.cover ? `${item.cover}` : fallbackLogo}
                           />
                         }
                         title={

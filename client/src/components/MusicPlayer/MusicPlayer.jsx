@@ -91,11 +91,7 @@ const MusicPlayer = ({ song, onNext, onPrevious, onShuffle }) => {
           <div className="music-details">
             <div>
               <img
-                src={
-                  song?.cover
-                    ? `data:image/png;base64,${song.cover}`
-                    : fallbackLogo
-                }
+                src={song?.cover ? `${song.cover}` : fallbackLogo}
                 width={"128px"}
               ></img>
             </div>
