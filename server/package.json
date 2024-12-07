@@ -1,0 +1,38 @@
+{
+  "name": "music-player",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "type": "module",
+  "engines": {
+    "node": "<18"
+  },
+  "scripts": {
+    "install:all": "npx yarn && cd client && yarn",
+    "start:dev": "nodemon src/index.js",
+    "start": "node index.js",
+    "start:prod": "npm-run-all build:client build start",
+    "clean": "rimraf dist",
+    "build:client": "cd client && yarn build"
+  },
+  "devDependencies": {
+    "dotenv": "^16.4.5",
+    "nodemon": "^3.1.0",
+    "rimraf": "^5.0.5"
+  },
+  "dependencies": {
+    "@aws-sdk/client-s3": "^3.556.0",
+    "@aws-sdk/s3-request-presigner": "^3.556.0",
+    "bcryptjs": "^2.4.3",
+    "cors": "^2.8.5",
+    "cross-env": "^7.0.3",
+    "express": "^4.19.2",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^8.3.2",
+    "morgan": "^1.10.0",
+    "multer": "^1.4.5-lts.1",
+    "music-metadata": "^10.6.2",
+    "node-id3": "^0.2.6",
+    "npm-run-all": "^4.1.5"
+  }
+}

@@ -1,0 +1,40 @@
+### add a song
+POST http://localhost:5000/api/song
+Content-Type: multipart/form-data
+
+{
+    "name": "New York Nagaram",
+}
+
+
+###
+GET http://localhost:5000/api/songs
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2MjZjOGIxMzIyNWJiYWRmMDU1OGEzOCIsImlhdCI6MTcxMzgxODM4MywiZXhwIjoxNzQ1Mzc1OTgzfQ.X2i0cgtDxc-huRklDaRksisWsSj5IJl0moyMOLbphts
+
+
+
+###
+GET http://localhost:5000/api/songs/66254f5805ddeab94eaa3a9a/play
+Range: 20
+
+
+
+### Register
+POST http://localhost:5000/api/auth/register
+Content-Type: application/json
+
+{
+    "email": "admin@email.com",
+    "password": "admin"
+}
+
+
+### Login
+POST http://localhost:5000/api/auth/login
+Content-Type: application/json
+
+{
+    "email": "admin@email.com",
+    "password": "admin"
+}
+

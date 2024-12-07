@@ -1,20 +1,35 @@
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  body {
+    background-color: #1f1f1f;
+    color: #f1f1f1;
+  }
 }
 
-.container {
-  width: 60%;
-  margin: 0 auto;
-}
-
-section {
-  margin: 50px 0;
-}
-
-@media only screen and (max-width: 786px) {
+@layer components {
   .container {
-    width: 90%;
+    @apply w-5/6 mx-auto;
+  }
+  .card {
+    @apply p-6 rounded-md shadow-md bg-[#1c1c1c];
+  }
+
+  input[type="text"],
+  input[type="email"],
+  input[type="password"] {
+    @apply p-2 w-full border border-zinc-800 my-2 rounded-sm bg-[#1f1f1f];
+  }
+
+  button[type="submit"] {
+    @apply px-2 py-1 bg-primary text-white border-none rounded-md min-w-max;
   }
 }

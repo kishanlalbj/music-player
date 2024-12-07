@@ -1,20 +1,31 @@
-import { useCallback, useEffect, useRef, useState } from "react";
-import {
-  CaretRightOutlined,
-  MutedOutlined,
-  PauseOutlined,
-  RetweetOutlined,
-  SoundFilled,
-  StepBackwardOutlined,
-  StepForwardOutlined
-} from "@ant-design/icons";
+import { useContext, useEffect, useRef, useState } from "react";
+// import {
+//   CaretRightOutlined,
+//   MutedOutlined,
+//   PauseOutlined,
+//   RetweetOutlined,
+//   SoundFilled,
+//   StepBackwardOutlined,
+//   StepForwardOutlined
+// } from "@ant-design/icons";
 import "./MusicPlayer.css";
-import { Button, Slider, Typography } from "antd";
+import { Slider } from "antd";
 import formatTime from "../../utils/formatTime";
 import fallbackLogo from "../../assets/music-note-dark.svg";
+import { MusicPlayerContext } from "../../contexts/MusicPlayerContext";
+import {
+  PauseIcon,
+  PlayIcon,
+  Repeat1Icon,
+  SkipBackIcon,
+  SkipForward
+} from "lucide-react";
+import { privateApi } from "../../utils";
 // import { BASE_URL } from "../../api";
 
-const MusicPlayer = ({ song, onNext, onPrevious, onShuffle }) => {
+const MusicPlayer = ({ onNext, onPrevious, onShuffle }) => {
+  const { song } = useContext(MusicPlayerContext);
+
   const audioRef = useRef(new Audio());
   const [playing, setPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
@@ -34,16 +45,33 @@ const MusicPlayer = ({ song, onNext, onPrevious, onShuffle }) => {
     }
   };
 
-  const setSong = useCallback(() => {
-    if (audioRef && song) {
-      audioRef.current.src = song.directUrl;
-      audioRef.current.autoplay = true;
+  const getPlayUrl = async (id) => {
+    try {
+      setLoading(true);
+      const res = await privateApi.get(`/api/songs/${id}/play`);
+
+      return res.data.url;
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setLoading(false);
     }
-  }, [song]);
+  };
 
   useEffect(() => {
-    setSong();
-  }, [setSong, song]);
+    const prepareSong = async () => {
+      if (song) {
+        console.log("Inside ref");
+        const url = await getPlayUrl(song._id);
+
+        audioRef.current.src = url;
+        audioRef.current.autoplay = true;
+        setPlaying(true);
+      }
+    };
+    console.log("running...");
+    prepareSong();
+  }, [song]);
 
   useEffect(() => {
     let timer;
@@ -84,7 +112,7 @@ const MusicPlayer = ({ song, onNext, onPrevious, onShuffle }) => {
   };
 
   return (
-    <div className="music-player-wrapper">
+    <div className="music-player-wrapper w-[600px]">
       <div className="">
         <div className="music-player">
           <audio ref={audioRef}></audio>
@@ -100,10 +128,10 @@ const MusicPlayer = ({ song, onNext, onPrevious, onShuffle }) => {
               ></img>
             </div>
             <div>
-              <Typography.Title level={4}>{song?.name}</Typography.Title>
-              <Typography.Text>{song?.album}</Typography.Text>
+              <p>{song?.name}</p>
+              <p>{song?.album}</p>
               <br />
-              <Typography.Text>{song?.artist}</Typography.Text>
+              <p>{song?.artist}</p>
               <br />
             </div>
           </div>
@@ -112,17 +140,9 @@ const MusicPlayer = ({ song, onNext, onPrevious, onShuffle }) => {
           <div className="audio-controls-container">
             <div className="audio-progress">
               <div className="audio-duration-container">
-                <p>
-                  <Typography.Text style={{ color: "#868589" }}>
-                    {formatTime(currentTime)}
-                  </Typography.Text>
-                </p>
+                <p>{formatTime(currentTime)}</p>
 
-                <p>
-                  <Typography.Text style={{ color: "#868589" }}>
-                    {formatTime(audioRef?.current?.duration)}
-                  </Typography.Text>
-                </p>
+                <p>{formatTime(audioRef?.current?.duration)}</p>
               </div>
 
               <Slider
@@ -137,51 +157,44 @@ const MusicPlayer = ({ song, onNext, onPrevious, onShuffle }) => {
             </div>
 
             <div className="audio-control-btns-container">
-              <Button
+              <button
                 type="primary"
                 shape="circle"
-                icon={<RetweetOutlined />}
+                icon={<Repeat1Icon />}
                 onClick={onShuffle}
-              ></Button>
-              <Button
+              ></button>
+              <button
                 type="primary"
                 shape="circle"
-                icon={<StepBackwardOutlined />}
+                icon={<SkipBackIcon />}
                 onClick={handlePrevious}
-              ></Button>
+              ></button>
               {playing ? (
-                <Button
+                <button
                   type="primary"
                   shape="circle"
-                  icon={<PauseOutlined />}
+                  icon={<PauseIcon />}
                   onClick={handlePause}
                   loading={loading}
-                ></Button>
+                ></button>
               ) : (
-                <Button
+                <button
                   type="primary"
                   shape="circle"
-                  icon={<CaretRightOutlined />}
+                  icon={<PlayIcon />}
                   onClick={handlePlay}
                   loading={loading}
-                ></Button>
+                ></button>
               )}
 
-              <Button
-                type="primary"
-                shape="circle"
-                icon={<StepForwardOutlined />}
-                onClick={handleNext}
-              ></Button>
-
-              <Button
+              {/* <Button
                 type={!audioRef.current.muted ? "primary" : "default"}
                 shape="circle"
                 onClick={handleMute}
                 icon={
                   audioRef.current.muted ? <MutedOutlined /> : <SoundFilled />
                 }
-              ></Button>
+              ></Button> */}
             </div>
           </div>
         </div>

@@ -1,33 +1,32 @@
-import { Typography } from "antd";
-import logo from "../assets/music-note.svg";
+import { Link } from "react-router-dom";
+import useAuth from "../hooks/useAuth";
+import { LogOutIcon } from "lucide-react";
 
 const Header = () => {
+  const { auth } = useAuth();
   return (
-    <div className="header-wrapper">
-      <div className="container">
-        <div className="header-container">
-          <div>
-            <Typography.Title
-              level={4}
-              style={{
-                fontFamily: `"Dancing Script", cursive`,
-                display: "flex",
-                gap: "8px",
-                color: "#fff"
-              }}
-            >
-              <img src={logo} width={"24px"}></img>
-              Thenisai Thendral
-            </Typography.Title>
-          </div>
+    <div className="h-14 border-b border-b-zinc-800 bg-[#1c1c1c]">
+      <div className="container flex items-center justify-between h-full">
+        <Link to="/home" className="text-lg">
+          Idha
+          <span className="text-primary font-semibold">Kelu</span>
+        </Link>
 
-          {/* <Button
-            type="primary"
-            icon={<UploadOutlined />}
-            loading={loading}
-            onClick={onToggleModal}
-          ></Button> */}
-        </div>
+        {auth?.accessToken && (
+          <nav>
+            <ul className="inline-flex items-center gap-6">
+              <li>
+                <Link to="/home">Home</Link>
+              </li>
+              <li>
+                <p>{auth?.name}</p>
+              </li>
+              <li>
+                <LogOutIcon className="cursor-pointer" />
+              </li>
+            </ul>
+          </nav>
+        )}
       </div>
     </div>
   );
